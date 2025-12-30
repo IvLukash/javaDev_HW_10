@@ -5,27 +5,30 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Formatter {
-    public static final String UTC = "UTC";
+    public static final String UTC_ZONE = "UTC";
+    public static final String UTC_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss 'UTC'";
+    public static final String UTC_DATE_TIME_WITH_OFFSET_FORMAT = "yyyy-MM-dd HH:mm:ss 'UTC'X";
+    public static final String UTC_WITH_OFFSET_REGEX = "UTC[ +\\-]\\d+";
 
     public static String getFormattedDateTime(String timezone) {
-        if (timezone.equals(UTC)) {
-            return utcNow();
+        if (timezone.equals(UTC_ZONE)) {
+            return getFormattedUTC();
         }
-        int offsetInHours = getOffset(timezone);
+        int offsetInHours = getTimeOffset(timezone);
         if (offsetInHours == 0) {
-            return utcNow();
+            return getFormattedUTC();
         }
         return ZonedDateTime.now(ZoneOffset.ofHours(offsetInHours))
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss 'UTC'X"));
+                .format(DateTimeFormatter.ofPattern(UTC_DATE_TIME_WITH_OFFSET_FORMAT));
     }
 
-    private static String utcNow() {
+    private static String getFormattedUTC() {
         return ZonedDateTime.now(ZoneOffset.UTC)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss 'UTC'"));
+                .format(DateTimeFormatter.ofPattern(UTC_DATE_TIME_FORMAT));
     }
 
-    public static int getOffset(String timezone) {
-        if (!timezone.matches("UTC[ +\\-]\\d+")) {
+    public static int getTimeOffset(String timezone) {
+        if (!timezone.matches(UTC_WITH_OFFSET_REGEX)) {
             throw new IllegalArgumentException("Invalid timezone");
         }
         int offsetInHours = Integer.parseInt(timezone.substring(3).trim());

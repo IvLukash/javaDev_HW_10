@@ -17,9 +17,9 @@ public class TimezoneValidateFilter extends HttpFilter {
         try {
             String timezone = req.getParameter("timezone");
             if (timezone == null || timezone.isBlank()) {
-                timezone = Formatter.UTC;
+                timezone = Formatter.UTC_ZONE;
             } else {
-                Formatter.getOffset(timezone);
+                Formatter.getTimeOffset(timezone);
             }
             req.setAttribute("timezone", timezone);
             chain.doFilter(req, res);
